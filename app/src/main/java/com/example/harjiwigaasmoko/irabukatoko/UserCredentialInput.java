@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +27,14 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    EditText editTextName;
+    private EditText editTextName;
+    private EditText editTextEmail;
+    private EditText editTextPhone;
+    private EditText editTextAddress;
+    private EditText editTextIdType;
+    private EditText editTextIdNum;
+
+
     private Button saveButton;
 
     // TODO: Rename and change types of parameters
@@ -74,16 +82,13 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
         Log.i("onCreateView","onCreateView pass");
         View view =inflater.inflate(R.layout.fragment_user_input, container, false);
         editTextName = (EditText)view.findViewById(R.id.editText);
+        editTextEmail = (EditText)view.findViewById(R.id.editText2);
+        editTextPhone = (EditText)view.findViewById(R.id.editText3);
+        editTextAddress = (EditText)view.findViewById(R.id.editText4);
+        editTextIdType = (EditText)view.findViewById(R.id.editText5);
+        editTextIdNum = (EditText)view.findViewById(R.id.editText6);
         saveButton = (Button)view.findViewById(R.id.savebutton);
-        saveButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                // do something
-                Log.i("onCreateView","onCreateView pass saveButton");
-            }
-        });
+        saveButton.setOnClickListener(this);
         return view;
     }
 
@@ -116,9 +121,21 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
     @Override
     public void onClick(View v) {
 
+        Editable nameEditable = null;
+        Editable emailEditable = null;
+        Editable phoneEditable = null;
+        Editable addressEditable = null;
+        Editable idTypeEditable = null;
+        Editable idNumEditable = null;
+
         switch(v.getId()) {
             case R.id.savebutton:
-                Log.i("insideOnClick ", " withinONview");
+
+                nameEditable = editTextName.getText();
+                if((nameEditable!= null) && (!nameEditable.toString().equals("")) ){
+                    String name = String.valueOf(nameEditable);
+                   Log.i("nameEditable"," name : "+name);
+                }
         }
     }
 

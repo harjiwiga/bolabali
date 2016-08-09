@@ -17,13 +17,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
 
-    private static final String DATABASE_NAME = "user_manager";
+    private static final String DATABASE_NAME = "bolabali";
 
-    private static final String TABLE_USERS = "users";
+    private static final String TABLE_USERS = "user_parties";
 
     private static final String KEY_ID = "id";
-    private static final String KEY_JUDUL = "judul";
-    private static final String KEY_PENULIS = "penulis";
+    private static final String NAME = "judul";
+    private static final String EMAIL = "penulis";
 
     public DatabaseHandler(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -32,31 +32,34 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_BUKU_TABLE = "CREATE TABLE " + TABLE_USERS + "("
-                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_JUDUL + " TEXT,"
-                + KEY_PENULIS + " TEXT" + ")";
+                + KEY_ID + " INTEGER PRIMARY KEY," + NAME + " TEXT,"
+                + EMAIL + " TEXT" + ")";
         db.execSQL(CREATE_BUKU_TABLE);
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
-
         onCreate(db);
     }
 
-    public void save(User buku){
+    private void executeQuery(){
+
+    }
+
+    public void save(User user){
         SQLiteDatabase db=this.getWritableDatabase();
         ContentValues values=new ContentValues();
-//        values.put(KEY_JUDUL, buku.getJudul());
-//        values.put(KEY_PENULIS, buku.getPenulis());
-
+        values.put(NAME,user.getName());
+        values.put(EMAIL,user.getName());
         db.insert(TABLE_USERS, null, values);
         db.close();
     }
 
     public User findOne(int id){
         SQLiteDatabase db=this.getReadableDatabase();
-        Cursor cursor=db.query(TABLE_USERS, new String[]{KEY_ID,KEY_JUDUL,KEY_PENULIS},
+        Cursor cursor=db.query(TABLE_USERS, new String[]{KEY_ID, NAME, EMAIL},
                 KEY_ID+"=?", new String[]{String.valueOf(id)}, null, null, null);
 
         if(cursor!=null){
@@ -91,8 +94,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db=this.getWritableDatabase();
 
         ContentValues values=new ContentValues();
-//        values.put(KEY_JUDUL, buku.getJudul());
-//        values.put(KEY_PENULIS, buku.getPenulis());
+//        values.put(NAME, buku.getJudul());
+//        values.put(EMAIL, buku.getPenulis());
 
 //        db.update(TABLE_USERS, values, KEY_ID+"=?", new String[]{String.valueOf(buku.getId())});
         db.close();
