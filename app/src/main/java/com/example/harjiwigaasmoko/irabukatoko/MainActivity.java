@@ -2,6 +2,7 @@ package com.example.harjiwigaasmoko.irabukatoko;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -18,9 +19,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,UserCredentialInput.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener,UserCredentialInput.OnFragmentInteractionListener,View.OnClickListener {
+
+    SharedPreferences prefs;
+    SharedPreferences.Editor edits;
+    TextView txtNamePersist;
+    EditText editTextName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +55,13 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+//        txtNamePersist = (TextView) findViewById(R.id.editText);
+        editTextName = (EditText)findViewById(R.id.editText);
+
+        prefs = getSharedPreferences("view", 0);
+        edits = prefs.edit();
+//        populateValues();
     }
 
     @Override
@@ -55,6 +71,18 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onClick(View v){
+        String nama = null;
+        switch(v.getId()) {
+            case R.id.savebutton:
+                if (txtNamePersist.getText() != null) {
+                    nama = txtNamePersist.getText().toString();
+                    Log.i("onClick", nama);
+                }
         }
     }
 
@@ -138,6 +166,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-         Log.i("onFragmentInteraction ",uri.getEncodedFragment());
+        Log.i("onFragmentInteraction ",uri.getEncodedFragment());
+    }
+
+    public void populateValues() {
+        String persistedText = prefs.getString("txtVal", "Default Name");
+        txtNamePersist.setText(persistedText);
+
     }
 }
