@@ -74,16 +74,9 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
         Log.i("onCreateView","onCreateView pass");
         View view =inflater.inflate(R.layout.fragment_user_input, container, false);
         editTextName = (EditText)view.findViewById(R.id.editText);
+
         saveButton = (Button)view.findViewById(R.id.savebutton);
-        saveButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                // do something
-                Log.i("onCreateView","onCreateView pass saveButton");
-            }
-        });
+        saveButton.setOnClickListener(this);
         return view;
     }
 
@@ -118,6 +111,9 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
 
         switch(v.getId()) {
             case R.id.savebutton:
+                if(editTextName.getText()!=null){
+                    Log.i("editText:","input text: "+ String.valueOf(editTextName.getText()));
+                }
                 Log.i("insideOnClick ", " withinONview");
         }
     }
