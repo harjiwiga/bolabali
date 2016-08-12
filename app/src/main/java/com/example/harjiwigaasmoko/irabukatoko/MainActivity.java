@@ -23,6 +23,8 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.harjiwigaasmoko.irabukatoko.handler.DatabaseHandler;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,UserCredentialInput.OnFragmentInteractionListener,View.OnClickListener {
 
@@ -30,6 +32,9 @@ public class MainActivity extends AppCompatActivity
     SharedPreferences.Editor edits;
     TextView txtNamePersist;
     EditText editTextName;
+
+    private DatabaseHandler databaseHandler;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +66,8 @@ public class MainActivity extends AppCompatActivity
 
         prefs = getSharedPreferences("view", 0);
         edits = prefs.edit();
+        databaseHandler= DatabaseHandler.getInstance(this);
+
 //        populateValues();
     }
 

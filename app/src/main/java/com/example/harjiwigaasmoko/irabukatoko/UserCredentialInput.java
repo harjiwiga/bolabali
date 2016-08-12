@@ -13,6 +13,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.harjiwigaasmoko.irabukatoko.entity.User;
+import com.example.harjiwigaasmoko.irabukatoko.handler.DatabaseHandler;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,6 +36,8 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
     private EditText editTextAddress;
     private EditText editTextIdType;
     private EditText editTextIdNum;
+
+    private DatabaseHandler dbHandler;
 
 
     private Button saveButton;
@@ -72,6 +77,7 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        dbHandler = DatabaseHandler.getInstance(getActivity());
 //        editTextName = (EditText)findById
     }
 
@@ -127,14 +133,19 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
         Editable addressEditable = null;
         Editable idTypeEditable = null;
         Editable idNumEditable = null;
-
+        User user = new User();
         switch(v.getId()) {
             case R.id.savebutton:
 
                 nameEditable = editTextName.getText();
-                if((nameEditable!= null) && (!nameEditable.toString().equals("")) ){
+                emailEditable = editTextEmail.getText();
+                if((nameEditable!= null) && (!nameEditable.toString().equals("")) &&  (emailEditable!=null) &&(!emailEditable.toString().equals(""))){
                     String name = String.valueOf(nameEditable);
-                   Log.i("nameEditable"," name : "+name);
+                    String email = String.valueOf(emailEditable);
+                    Log.i("nameEditable"," name : "+name);
+                    user.setName(name);
+                    user.setEmail(email);
+                    dbHandler.save(user);
                 }
         }
     }
