@@ -5,7 +5,7 @@ package com.example.harjiwigaasmoko.irabukatoko.entity;
  */
 public class User {
 
-    private String id;
+    private int id;
     private String name;
     private String email;
     private String phoneNum;
@@ -68,11 +68,16 @@ public class User {
         this.idType = idType;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(id)+". "+name+" "+email;
     }
 }

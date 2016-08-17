@@ -1,9 +1,8 @@
-package com.example.harjiwigaasmoko.irabukatoko;
+package com.example.harjiwigaasmoko.irabukatoko.fragments;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.example.harjiwigaasmoko.irabukatoko.R;
 import com.example.harjiwigaasmoko.irabukatoko.dummy.DummyContent;
+import com.example.harjiwigaasmoko.irabukatoko.entity.User;
+import com.example.harjiwigaasmoko.irabukatoko.handler.DatabaseHandler;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -24,7 +30,7 @@ import com.example.harjiwigaasmoko.irabukatoko.dummy.DummyContent;
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
-public class UserListFragment extends android.support.v4.app.Fragment implements AbsListView.OnItemClickListener {
+public class UserListFragment extends android.support.v4.app.Fragment implements AbsListView.OnItemClickListener,AdapterView.OnItemLongClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,6 +42,8 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private List<User>usersList = new ArrayList<User>();
+    private Activity activity;
 
     /**
      * The fragment's ListView/GridView.
@@ -73,10 +81,19 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        activity = getActivity();
+//        activity.setTitle("Users");
+        DatabaseHandler dbHandler = DatabaseHandler.getInstance(activity);
+        usersList = dbHandler.findAll();
 
+        for(Iterator<User> i =usersList.listIterator();i.hasNext();){
+            User u = i.next();
+            Log.i("ListView","user name: "+u.getName());
+            Log.i("ListView","user email: "+u.getEmail());
+        }
         // TODO: Change Adapter to display your content
-        mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
+        mAdapter = new ArrayAdapter<User>(getActivity(),
+                android.R.layout.simple_list_item_1, android.R.id.text1, usersList);
     }
 
     @Override
@@ -84,12 +101,15 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_userlist, container, false);
 
+
         // Set the adapter
         mListView = (AbsListView) view.findViewById(android.R.id.list);
         ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
+        mListView.setLongClickable(true);
+        mListView.setOnItemLongClickListener(this);
 
         return view;
     }
@@ -131,6 +151,11 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
         if (emptyView instanceof TextView) {
             ((TextView) emptyView).setText(emptyText);
         }
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        return false;
     }
 
     /**

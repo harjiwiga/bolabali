@@ -4,6 +4,8 @@ package com.example.harjiwigaasmoko.irabukatoko.handler;
  * Created by harjiwigaasmoko on 8/6/16.
  */
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import com.example.harjiwigaasmoko.irabukatoko.entity.User;
 
@@ -80,23 +82,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
-    public void save(User user){
+    public long save(User user){
+
         SQLiteDatabase db =this.getWritableDatabase();
         ContentValues values=new ContentValues();
         Log.i(getDatabaseName(),"save values");
-//        db.beginTransaction();
+        long recorded = 0;
+
         try{
             values.put(NAME,user.getName());
             values.put(EMAIL, user.getEmail());
-//            db.insert(TABLE_USERS,null,values);
-            Log.i("save"," success insert:"+ String.valueOf(db.insertOrThrow(TABLE_USERS, null, values)));
+
+            recorded = db.insertOrThrow(TABLE_USERS, null, values);
+            Log.i("save"," success insert:"+ String.valueOf(recorded));
         }catch (Exception e){
             Log.d("sqlite", "Error while trying to add post to database");
         }finally {
-//            db.endTransaction();
             db.close();
         }
-
+        return recorded;
     }
 
     public User findOne(int id){
@@ -123,13 +127,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         if(cursor.moveToFirst()){
             do{
-                User buku=new User();
+                User user=new User();
+                user.setId(cursor.getInt(0));
+                user.setName(cursor.getString(1));
+                user.setEmail(cursor.getString(2));
 //                buku.setId(Integer.valueOf(cursor.getString(0)));
 //                buku.setJudul(cursor.getString(1));
 //                buku.setPenulis(cursor.getString(2));
-                listBuku.add(buku);
+                listBuku.add(user);
             }while(cursor.moveToNext());
         }
+
 
         return listBuku;
     }

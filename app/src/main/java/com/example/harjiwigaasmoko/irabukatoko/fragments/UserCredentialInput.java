@@ -1,4 +1,4 @@
-package com.example.harjiwigaasmoko.irabukatoko;
+package com.example.harjiwigaasmoko.irabukatoko.fragments;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.harjiwigaasmoko.irabukatoko.R;
+import com.example.harjiwigaasmoko.irabukatoko.additionalviews.SimpleAlertDialog;
 import com.example.harjiwigaasmoko.irabukatoko.entity.User;
 import com.example.harjiwigaasmoko.irabukatoko.handler.DatabaseHandler;
 
@@ -36,6 +38,7 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
     private EditText editTextAddress;
     private EditText editTextIdType;
     private EditText editTextIdNum;
+    private Activity activity;
 
     private DatabaseHandler dbHandler;
 
@@ -77,7 +80,9 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        dbHandler = DatabaseHandler.getInstance(getActivity());
+        activity = getActivity();
+//        activity.setTitle("User Input");
+        dbHandler = DatabaseHandler.getInstance(activity);
 //        editTextName = (EditText)findById
     }
 
@@ -145,7 +150,11 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
                     Log.i("nameEditable"," name : "+name);
                     user.setName(name);
                     user.setEmail(email);
-                    dbHandler.save(user);
+                    long record = dbHandler.save(user);
+                    if(record>0){
+                        SimpleAlertDialog.displayWithOK(getActivity(), " Record Saved");
+
+                    }
                 }
         }
     }
