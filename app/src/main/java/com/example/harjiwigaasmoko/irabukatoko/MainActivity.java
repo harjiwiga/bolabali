@@ -144,13 +144,13 @@ public class MainActivity extends AppCompatActivity
             if (id == R.id.nav_camara) {
 
                 fragmentClass = UserCredentialInput.class;
-                contentMain.removeAllViews();
+//                contentMain.removeAllViews();
 
                 // Handle the camera action
             } else if (id == R.id.nav_gallery) {
 //            Log.i("onNavigation","in naf gallery");
                 fragmentClass = UserListFragment.class;
-                contentMain.removeAllViews();
+//                contentMain.removeAllViews();
             }
             try {
                 fragment = (android.support.v4.app.Fragment) fragmentClass.newInstance();

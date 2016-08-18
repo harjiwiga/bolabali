@@ -11,8 +11,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.harjiwigaasmoko.irabukatoko.R;
+import com.example.harjiwigaasmoko.irabukatoko.customs.UserAdapter;
 import com.example.harjiwigaasmoko.irabukatoko.dummy.DummyContent;
 import com.example.harjiwigaasmoko.irabukatoko.entity.User;
 import com.example.harjiwigaasmoko.irabukatoko.handler.DatabaseHandler;
@@ -54,7 +56,7 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
      * The Adapter which will be used to populate the ListView/GridView with
      * Views.
      */
-    private ListAdapter mAdapter;
+    private UserAdapter mAdapter;
 
     // TODO: Rename and change types of parameters
     public static UserListFragment newInstance(String param1, String param2) {
@@ -92,8 +94,11 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
             Log.i("ListView","user email: "+u.getEmail());
         }
         // TODO: Change Adapter to display your content
-        mAdapter = new ArrayAdapter<User>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, usersList);
+//        mAdapter = new ArrayAdapter<User>(getActivity(),
+//                android.R.layout.simple_list_item_1, android.R.id.text1, usersList);
+//        mAdapter = new ArrayAdapter<User>(getActivity(),R.layout.row,usersList);
+        mAdapter = new UserAdapter(getActivity(),R.layout.row,usersList);
+
     }
 
     @Override
@@ -136,7 +141,12 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+
+            mListener.onFragmentInteraction(String.valueOf(usersList.get(position).getId()));
+            User user = (User) parent.getItemAtPosition(position);
+            Toast.makeText(getContext(),
+                    "Clicked on Row: " + user.getName(),
+                    Toast.LENGTH_LONG).show();
         }
     }
 

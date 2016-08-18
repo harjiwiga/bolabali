@@ -40,8 +40,16 @@ public class UserAdapter extends ArrayAdapter<User>{
         if(row==null){
             row = inflater.inflate(layoutResourceId, parent, false);
             holder = new UserHolder();
-            holder.name = (TextView)row.findViewById(R.id.editText8);
+            holder.name = (TextView)row.findViewById(R.id.textView2);
             holder.checkBox = (CheckBox)row.findViewById(R.id.checkBox);
+            holder.checkBox.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    CheckBox cb = (CheckBox) v ;
+                    User user = (User) cb.getTag();
+                    user.setSelected(cb.isChecked());
+                }
+            });
             row.setTag(holder);
         }else{
             holder = (UserHolder)row.getTag();
@@ -49,13 +57,15 @@ public class UserAdapter extends ArrayAdapter<User>{
 
         User user = users.get(position);
         holder.name.setText(user.getName());
+        holder.checkBox.setSelected(user.isSelected());
+        holder.checkBox.setTag(user);
         return row;
     }
 
     static class UserHolder
     {
-
         TextView name;
         CheckBox checkBox;
     }
+
 }

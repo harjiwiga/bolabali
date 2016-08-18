@@ -12,6 +12,7 @@ public class User {
     private String address;
     private String idType;
     private String idNumber;
+    private boolean selected;
 
     public User() {
     }
@@ -79,5 +80,13 @@ public class User {
     @Override
     public String toString() {
         return String.valueOf(id)+". "+name+" "+email;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }
