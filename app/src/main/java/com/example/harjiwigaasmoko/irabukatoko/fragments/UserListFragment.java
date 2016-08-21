@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,7 +33,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
-public class UserListFragment extends android.support.v4.app.Fragment implements AbsListView.OnItemClickListener,AdapterView.OnItemLongClickListener {
+public class UserListFragment extends android.support.v4.app.Fragment implements AbsListView.OnItemClickListener,AdapterView.OnItemLongClickListener,View.OnClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -99,6 +100,9 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
 //        mAdapter = new ArrayAdapter<User>(getActivity(),R.layout.row,usersList);
         mAdapter = new UserAdapter(getActivity(),R.layout.row,usersList);
 
+//        checkButtonClick();
+
+
     }
 
     @Override
@@ -116,6 +120,8 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
         mListView.setLongClickable(true);
         mListView.setOnItemLongClickListener(this);
 
+        Button myButton = (Button) view.findViewById(R.id.button_next);
+        myButton.setOnClickListener(this);
         return view;
     }
 
@@ -168,6 +174,23 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
         return false;
     }
 
+    @Override
+    public void onClick(View v) {
+        StringBuffer responseText = new StringBuffer();
+        responseText.append("The following were selected...\n");
+
+        ArrayList<User> countryList = (ArrayList<User>) mAdapter.getUsers();
+        for(int i=0;i<countryList.size();i++){
+            User country = countryList.get(i);
+            if(country.isSelected()){
+                responseText.append("\n" + country.getName());
+            }
+        }
+
+        Toast.makeText(activity.getApplicationContext(),
+                responseText, Toast.LENGTH_LONG).show();
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -182,5 +205,34 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
         // TODO: Update argument type and name
         public void onFragmentInteraction(String id);
     }
+
+    private void checkButtonClick() {
+
+
+        Button myButton = (Button) activity.findViewById(R.id.button_next);
+        myButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                StringBuffer responseText = new StringBuffer();
+                responseText.append("The following were selected...\n");
+
+                ArrayList<User> countryList = (ArrayList<User>) mAdapter.getUsers();
+                for(int i=0;i<countryList.size();i++){
+                    User country = countryList.get(i);
+                    if(country.isSelected()){
+                        responseText.append("\n" + country.getName());
+                    }
+                }
+
+                Toast.makeText(activity.getApplicationContext(),
+                        responseText, Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+    }
+
 
 }

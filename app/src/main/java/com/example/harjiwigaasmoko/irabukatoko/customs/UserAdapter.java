@@ -19,6 +19,10 @@ import java.util.List;
  */
 public class UserAdapter extends ArrayAdapter<User>{
 
+    public List<User> getUsers() {
+        return users;
+    }
+
     List<User> users = null;
     Context context;
     int layoutResourceId;
