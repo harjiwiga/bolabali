@@ -3,7 +3,10 @@ package com.example.harjiwigaasmoko.irabukatoko.fragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -33,7 +36,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
-public class UserListFragment extends android.support.v4.app.Fragment implements AbsListView.OnItemClickListener,AdapterView.OnItemLongClickListener,View.OnClickListener {
+public class UserListFragment extends android.support.v4.app.Fragment implements AbsListView.OnItemClickListener,View.OnClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -117,11 +120,11 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
 
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
-        mListView.setLongClickable(true);
-        mListView.setOnItemLongClickListener(this);
-
-        Button myButton = (Button) view.findViewById(R.id.button_next);
-        myButton.setOnClickListener(this);
+//        mListView.setLongClickable(true);
+//        mListView.setOnItemLongClickListener(this);
+        registerForContextMenu(mListView);
+//        Button myButton = (Button) view.findViewById(R.id.button_next);
+//        myButton.setOnClickListener(this);
         return view;
     }
 
@@ -169,10 +172,10 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
         }
     }
 
-    @Override
-    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        return false;
-    }
+//    @Override
+//    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//        return false;
+//    }
 
     @Override
     public void onClick(View v) {
@@ -206,33 +209,32 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
         public void onFragmentInteraction(String id);
     }
 
-    private void checkButtonClick() {
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
 
-
-        Button myButton = (Button) activity.findViewById(R.id.button_next);
-        myButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                StringBuffer responseText = new StringBuffer();
-                responseText.append("The following were selected...\n");
-
-                ArrayList<User> countryList = (ArrayList<User>) mAdapter.getUsers();
-                for(int i=0;i<countryList.size();i++){
-                    User country = countryList.get(i);
-                    if(country.isSelected()){
-                        responseText.append("\n" + country.getName());
-                    }
-                }
-
-                Toast.makeText(activity.getApplicationContext(),
-                        responseText, Toast.LENGTH_LONG).show();
-
+        Log.i("onCreateContextMenu"," menu Info : " +menuInfo);
+        if (v.getId()==android.R.id.list) {
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+            menu.setHeaderTitle(usersList.get(info.position).getName());
+            String[] menuItems = getResources().getStringArray(R.array.menu);
+            for (int i = 0; i<menuItems.length; i++) {
+                menu.add(Menu.NONE, i, i, menuItems[i]);
             }
-        });
-
+        }
     }
 
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        Log.i("onContextItemSelected"," menu Info : " +item);
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        int menuItemIndex = item.getItemId();
+        String[] menuItems = getResources().getStringArray(R.array.menu);
+        String menuItemName = menuItems[menuItemIndex];
+        String listItemName = usersList.get(info.position).getName();
 
+//        TextView text = (TextView)findViewById(R.id.footer);
+//        text.setText(String.format("Selected %s for item %s", menuItemName, listItemName));
+        return true;
+    }
 }
