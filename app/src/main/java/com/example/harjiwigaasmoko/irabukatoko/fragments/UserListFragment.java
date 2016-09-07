@@ -213,7 +213,7 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
 
-        Log.i("onCreateContextMenu"," menu Info : " +menuInfo);
+//        Log.i("onCreateContextMenu"," menu Info : " +menuInfo);
         if (v.getId()==android.R.id.list) {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
             menu.setHeaderTitle(usersList.get(info.position).getName());
@@ -232,7 +232,14 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
         String[] menuItems = getResources().getStringArray(R.array.menu);
         String menuItemName = menuItems[menuItemIndex];
         String listItemName = usersList.get(info.position).getName();
-
+        Log.i("onContextItemSelected","menuItemName: "+menuItemName);
+        if(menuItemName.equalsIgnoreCase("edit")){
+            //TODO harji: implement goto activity to edit the entity
+            Log.i("onContextItemSelected","implement edit here");
+        }else  if(menuItemName.equalsIgnoreCase("delete")){
+            //TODO harji: implement delete entity
+            Log.i("onContextItemSelected","implement delete here");
+        }
 //        TextView text = (TextView)findViewById(R.id.footer);
 //        text.setText(String.format("Selected %s for item %s", menuItemName, listItemName));
         return true;

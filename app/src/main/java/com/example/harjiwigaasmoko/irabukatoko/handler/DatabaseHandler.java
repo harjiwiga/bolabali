@@ -105,6 +105,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public User findOne(int id){
         SQLiteDatabase db=this.getReadableDatabase();
+        //TODO harji: implement all field to be inserted to the table
         Cursor cursor=db.query(TABLE_USERS, new String[]{KEY_ID, NAME, EMAIL},
                 KEY_ID+"=?", new String[]{String.valueOf(id)}, null, null, null);
 
@@ -150,6 +151,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 //        values.put(EMAIL, buku.getPenulis());
 
 //        db.update(TABLE_USERS, values, KEY_ID+"=?", new String[]{String.valueOf(buku.getId())});
+        //Todo harji : implement upsert query http://stackoverflow.com/questions/20323174/upsert-in-sqlite
+
         db.close();
     }
 
