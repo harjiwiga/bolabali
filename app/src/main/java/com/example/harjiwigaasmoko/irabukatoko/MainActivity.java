@@ -1,14 +1,10 @@
 package com.example.harjiwigaasmoko.irabukatoko;
 
-import android.app.Fragment;
-import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -19,9 +15,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.example.harjiwigaasmoko.irabukatoko.fragments.UserCredentialInput;
+import com.example.harjiwigaasmoko.irabukatoko.fragments.UserListFragment;
+import com.example.harjiwigaasmoko.irabukatoko.handler.DatabaseHandler;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,UserCredentialInput.OnFragmentInteractionListener,View.OnClickListener {
@@ -30,6 +31,10 @@ public class MainActivity extends AppCompatActivity
     SharedPreferences.Editor edits;
     TextView txtNamePersist;
     EditText editTextName;
+
+    private DatabaseHandler databaseHandler;
+    private DrawerLayout drawerGlob;
+    private boolean isStartup = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,20 +52,27 @@ public class MainActivity extends AppCompatActivity
 //            }
 //        });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerGlob = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+                this, drawerGlob, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+
+        drawerGlob.setDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
 
 //        txtNamePersist = (TextView) findViewById(R.id.editText);
         editTextName = (EditText)findViewById(R.id.editText);
 
         prefs = getSharedPreferences("view", 0);
         edits = prefs.edit();
+        databaseHandler= DatabaseHandler.getInstance(this);
+
+
 //        populateValues();
     }
 
@@ -109,58 +121,61 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressLint("WrongViewCast")
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        Log.i("currentView","view ID: "+ String.valueOf(getWindow().getCurrentFocus().getId()));
+
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         android.support.v4.app.Fragment fragment = null;
         Class fragmentClass = null;
-
-        if (id == R.id.nav_camara) {
-//            fragment = new UserCredentialInput();
-//            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//            ft.replace(R.id., fragment);
-//            ft.commit();
-            fragmentClass = UserCredentialInput.class;
-
-
-            // Handle the camera action
-        }
-        else if (id == R.id.nav_gallery) {
-//            Log.i("onNavigation","in naf gallery");
-            fragmentClass = UserListFragment.class;
-        }
-//        else if (id == R.id.nav_slideshow) {
-
-//
-//
-//        } else if (id == R.id.nav_manage) {
-//
-//        } else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.nav_send) {
-//
-//
-//        }
-
-        try {
-            fragment = (android.support.v4.app.Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // Insert the fragment by replacing any existing fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
+
+        RelativeLayout contentMain = ((RelativeLayout) findViewById(R.id.content_main));
+        if(isStartup) {
+            contentMain.removeAllViews();
+            isStartup = false;
+        }
+
+        if (id != R.id.nav_manage) {
+            if (id == R.id.nav_camara) {
+
+                fragmentClass = UserCredentialInput.class;
+//                contentMain.removeAllViews();
+
+                // Handle the camera action
+            } else if (id == R.id.nav_gallery) {
+//            Log.i("onNavigation","in naf gallery");
+                fragmentClass = UserListFragment.class;
+//                contentMain.removeAllViews();
+            }
+            try {
+                fragment = (android.support.v4.app.Fragment) fragmentClass.newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // Insert the fragment by replacing any existing fragment
+//            drawerGlob.setVisibility(View.GONE);
+            fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
 
 
 
+        }else{
+//            fragmentManager.popBackStack();
+//            contentMain.
+            fragmentManager.popBackStackImmediate();
 
+        }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        setTitle(item.getTitle());
+
+        drawerGlob = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        drawerGlob.closeDrawer(GravityCompat.START);
         return true;
     }
 

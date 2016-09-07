@@ -26,4 +26,5 @@ dependencies {
     compile 'com.android.support:design:23.0.1'
     // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-android-driver
     compile 'org.seleniumhq.selenium:selenium-android-driver:2.20.0'
+    androidTestCompile 'junit:junit:4.12'
 }

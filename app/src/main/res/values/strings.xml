@@ -1,11 +1,20 @@
 <resources>
     <string name="app_name">IraBukatoko</string>
+    <string name="app_name1">BolaBali</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
 
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="menu">
+        <item>Edit</item>
+        <item>Delete</item>
+        <item>Send</item>
+    </string-array>
+    <string name="title_activity_edit_cred">EditCredActivity</string>
+
 </resources>

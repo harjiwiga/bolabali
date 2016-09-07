@@ -1,16 +1,22 @@
-package com.example.harjiwigaasmoko.irabukatoko;
+package com.example.harjiwigaasmoko.irabukatoko.fragments;
 
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.example.harjiwigaasmoko.irabukatoko.R;
+import com.example.harjiwigaasmoko.irabukatoko.additionalviews.SimpleAlertDialog;
+import com.example.harjiwigaasmoko.irabukatoko.entity.User;
+import com.example.harjiwigaasmoko.irabukatoko.handler.DatabaseHandler;
 
 
 /**
@@ -26,7 +32,17 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    EditText editTextName;
+    private EditText editTextName;
+    private EditText editTextEmail;
+    private EditText editTextPhone;
+    private EditText editTextAddress;
+    private EditText editTextIdType;
+    private EditText editTextIdNum;
+    private Activity activity;
+
+    private DatabaseHandler dbHandler;
+
+
     private Button saveButton;
 
     // TODO: Rename and change types of parameters
@@ -64,6 +80,9 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        activity = getActivity();
+//        activity.setTitle("User Input");
+        dbHandler = DatabaseHandler.getInstance(activity);
 //        editTextName = (EditText)findById
     }
 
@@ -74,7 +93,11 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
         Log.i("onCreateView","onCreateView pass");
         View view =inflater.inflate(R.layout.fragment_user_input, container, false);
         editTextName = (EditText)view.findViewById(R.id.editText);
-
+        editTextEmail = (EditText)view.findViewById(R.id.editText2);
+        editTextPhone = (EditText)view.findViewById(R.id.editText3);
+        editTextAddress = (EditText)view.findViewById(R.id.editText4);
+        editTextIdType = (EditText)view.findViewById(R.id.editText5);
+        editTextIdNum = (EditText)view.findViewById(R.id.editText6);
         saveButton = (Button)view.findViewById(R.id.savebutton);
         saveButton.setOnClickListener(this);
         return view;
@@ -109,12 +132,30 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
     @Override
     public void onClick(View v) {
 
+        Editable nameEditable = null;
+        Editable emailEditable = null;
+        Editable phoneEditable = null;
+        Editable addressEditable = null;
+        Editable idTypeEditable = null;
+        Editable idNumEditable = null;
+        User user = new User();
         switch(v.getId()) {
             case R.id.savebutton:
-                if(editTextName.getText()!=null){
-                    Log.i("editText:","input text: "+ String.valueOf(editTextName.getText()));
+
+                nameEditable = editTextName.getText();
+                emailEditable = editTextEmail.getText();
+                if((nameEditable!= null) && (!nameEditable.toString().equals("")) &&  (emailEditable!=null) &&(!emailEditable.toString().equals(""))){
+                    String name = String.valueOf(nameEditable);
+                    String email = String.valueOf(emailEditable);
+                    Log.i("nameEditable"," name : "+name);
+                    user.setName(name);
+                    user.setEmail(email);
+                    long record = dbHandler.save(user);
+                    if(record>0){
+                        SimpleAlertDialog.displayWithOK(getActivity(), " Record Saved");
+
+                    }
                 }
-                Log.i("insideOnClick ", " withinONview");
         }
     }
 

@@ -4,6 +4,8 @@ package com.example.harjiwigaasmoko.irabukatoko.handler;
  * Created by harjiwigaasmoko on 8/6/16.
  */
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import com.example.harjiwigaasmoko.irabukatoko.entity.User;
 
@@ -12,51 +14,98 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
+import android.util.Log;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 4;
 
-    private static final String DATABASE_NAME = "user_manager";
+    private static final String DATABASE_NAME = "bolabali";
 
     private static final String TABLE_USERS = "users";
 
     private static final String KEY_ID = "id";
-    private static final String KEY_JUDUL = "judul";
-    private static final String KEY_PENULIS = "penulis";
+    private static final String NAME = "name";
+    private static final String EMAIL = "email";
+
+    private static DatabaseHandler handlerInstance;
 
     public DatabaseHandler(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    public static synchronized DatabaseHandler getInstance(Context context) {
+        // Use the application context, which will ensure that you
+        // don't accidentally leak an Activity's context.
+        // See this article for more information: http://bit.ly/6LRzfx
+        Log.i("instance","getinstance");
+        Log.i("instance","dbPath: "+context.getDatabasePath(DATABASE_NAME));
+        if (handlerInstance == null) {
+            handlerInstance = new DatabaseHandler(context.getApplicationContext());
+
+        }
+        return handlerInstance;
+    }
+
+    @Override
+    public void onConfigure(SQLiteDatabase db) {
+        super.onConfigure(db);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            db.setForeignKeyConstraintsEnabled(true);
+        }
+    }
+
+
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_BUKU_TABLE = "CREATE TABLE " + TABLE_USERS + "("
-                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_JUDUL + " TEXT,"
-                + KEY_PENULIS + " TEXT" + ")";
-        db.execSQL(CREATE_BUKU_TABLE);
+        Log.i("DBHandler","con create");
+
+        String CREATE_USER_TABLE = "CREATE TABLE " + TABLE_USERS + "("
+                + KEY_ID + " INTEGER PRIMARY KEY," + NAME + " TEXT,"
+                + EMAIL + " TEXT" + ")";
+        db.execSQL(CREATE_USER_TABLE);
+        Log.i("DBHandler","con create");
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
-
-        onCreate(db);
+        if(oldVersion!=newVersion) {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
+            onCreate(db);
+        }
     }
 
-    public void save(User buku){
-        SQLiteDatabase db=this.getWritableDatabase();
-        ContentValues values=new ContentValues();
-//        values.put(KEY_JUDUL, buku.getJudul());
-//        values.put(KEY_PENULIS, buku.getPenulis());
 
-        db.insert(TABLE_USERS, null, values);
-        db.close();
+    private void executeQuery(){
+
+    }
+
+    public long save(User user){
+
+        SQLiteDatabase db =this.getWritableDatabase();
+        ContentValues values=new ContentValues();
+        Log.i(getDatabaseName(),"save values");
+        long recorded = 0;
+
+        try{
+            values.put(NAME,user.getName());
+            values.put(EMAIL, user.getEmail());
+
+            recorded = db.insertOrThrow(TABLE_USERS, null, values);
+            Log.i("save"," success insert:"+ String.valueOf(recorded));
+        }catch (Exception e){
+            Log.d("sqlite", "Error while trying to add post to database");
+        }finally {
+            db.close();
+        }
+        return recorded;
     }
 
     public User findOne(int id){
         SQLiteDatabase db=this.getReadableDatabase();
-        Cursor cursor=db.query(TABLE_USERS, new String[]{KEY_ID,KEY_JUDUL,KEY_PENULIS},
+        Cursor cursor=db.query(TABLE_USERS, new String[]{KEY_ID, NAME, EMAIL},
                 KEY_ID+"=?", new String[]{String.valueOf(id)}, null, null, null);
 
         if(cursor!=null){
@@ -67,6 +116,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return new User("1");
     }
 
+    //todo harji : finish the find all Query
+
     public List<User> findAll(){
         List<User> listBuku=new ArrayList<User>();
         String query="SELECT * FROM "+ TABLE_USERS;
@@ -76,13 +127,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         if(cursor.moveToFirst()){
             do{
-                User buku=new User();
+                User user=new User();
+                user.setId(cursor.getInt(0));
+                user.setName(cursor.getString(1));
+                user.setEmail(cursor.getString(2));
 //                buku.setId(Integer.valueOf(cursor.getString(0)));
 //                buku.setJudul(cursor.getString(1));
 //                buku.setPenulis(cursor.getString(2));
-                listBuku.add(buku);
+                listBuku.add(user);
             }while(cursor.moveToNext());
         }
+
 
         return listBuku;
     }
@@ -91,8 +146,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db=this.getWritableDatabase();
 
         ContentValues values=new ContentValues();
-//        values.put(KEY_JUDUL, buku.getJudul());
-//        values.put(KEY_PENULIS, buku.getPenulis());
+//        values.put(NAME, buku.getJudul());
+//        values.put(EMAIL, buku.getPenulis());
 
 //        db.update(TABLE_USERS, values, KEY_ID+"=?", new String[]{String.valueOf(buku.getId())});
         db.close();
