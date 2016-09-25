@@ -51,6 +51,8 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
     private List<User>usersList = new ArrayList<User>();
     private Activity activity;
 
+    DatabaseHandler dbHandler;
+
     /**
      * The fragment's ListView/GridView.
      */
@@ -88,8 +90,8 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         activity = getActivity();
-//        activity.setTitle("Users");
-        DatabaseHandler dbHandler = DatabaseHandler.getInstance(activity);
+
+        dbHandler = DatabaseHandler.getInstance(activity);
         usersList = dbHandler.findAll();
 
         for(Iterator<User> i =usersList.listIterator();i.hasNext();){
@@ -231,11 +233,13 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
         int menuItemIndex = item.getItemId();
         String[] menuItems = getResources().getStringArray(R.array.menu);
         String menuItemName = menuItems[menuItemIndex];
-        String listItemName = usersList.get(info.position).getName();
+        User user = usersList.get(info.position);
+        int userId = user.getId();
         Log.i("onContextItemSelected","menuItemName: "+menuItemName);
         if(menuItemName.equalsIgnoreCase("edit")){
             //TODO harji: implement goto activity to edit the entity
             Log.i("onContextItemSelected","implement edit here");
+
         }else  if(menuItemName.equalsIgnoreCase("delete")){
             //TODO harji: implement delete entity
             Log.i("onContextItemSelected","implement delete here");

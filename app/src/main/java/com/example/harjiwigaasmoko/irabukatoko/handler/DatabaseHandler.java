@@ -28,6 +28,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_ID = "id";
     private static final String NAME = "name";
     private static final String EMAIL = "email";
+    private static final String PHONE = "phonenum";
+    private static final String ADDRESS = "address";
+    private static final String IDTYPE = "idtype";
+    private static final String IDNUMBER = "idnum";
 
     private static DatabaseHandler handlerInstance;
 
@@ -63,7 +67,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String CREATE_USER_TABLE = "CREATE TABLE " + TABLE_USERS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY," + NAME + " TEXT,"
-                + EMAIL + " TEXT" + ")";
+                + EMAIL + " TEXT," +ADDRESS+ " TEXT,"+IDTYPE+ " TEXT,"+IDNUMBER+" TEXT,"+PHONE+" TEXT );";
         db.execSQL(CREATE_USER_TABLE);
         Log.i("DBHandler","con create");
 
@@ -90,8 +94,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         long recorded = 0;
 
         try{
-            values.put(NAME,user.getName());
-            values.put(EMAIL, user.getEmail());
+            values.put(NAME,(user.getName()==null?"":user.getName()));
+            values.put(EMAIL, (user.getEmail()==null?"":user.getEmail()));
+            values.put(ADDRESS,(user.getAddress()==null?"":user.getAddress()));
+            values.put(IDTYPE, (user.getIdType()==null?"":user.getIdType()));
+            values.put(IDNUMBER,(user.getIdNumber()==null?"":user.getIdNumber()));
+            values.put(PHONE,(user.getPhoneNum()==null?"":user.getPhoneNum()));
 
             recorded = db.insertOrThrow(TABLE_USERS, null, values);
             Log.i("save"," success insert:"+ String.valueOf(recorded));
@@ -106,13 +114,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public User findOne(int id){
         SQLiteDatabase db=this.getReadableDatabase();
         //TODO harji: implement all field to be inserted to the table
-        Cursor cursor=db.query(TABLE_USERS, new String[]{KEY_ID, NAME, EMAIL},
+        Cursor cursor=db.query(TABLE_USERS, new String[]{KEY_ID, NAME, EMAIL,ADDRESS,IDTYPE,IDNUMBER,PHONE},
                 KEY_ID+"=?", new String[]{String.valueOf(id)}, null, null, null);
 
         if(cursor!=null){
             cursor.moveToFirst();
         }
-
 
         return new User("1");
     }
@@ -132,6 +139,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 user.setId(cursor.getInt(0));
                 user.setName(cursor.getString(1));
                 user.setEmail(cursor.getString(2));
+                user.setAddress(cursor.getString(3));
+                user.setIdType(cursor.getString(4));
+                user.setIdNumber(cursor.getString(5));
+                user.setPhoneNum(cursor.getString(6));
 //                buku.setId(Integer.valueOf(cursor.getString(0)));
 //                buku.setJudul(cursor.getString(1));
 //                buku.setPenulis(cursor.getString(2));
@@ -143,16 +154,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return listBuku;
     }
 
-    public void update(User buku){
+    public void update(User user){
         SQLiteDatabase db=this.getWritableDatabase();
 
         ContentValues values=new ContentValues();
-//        values.put(NAME, buku.getJudul());
-//        values.put(EMAIL, buku.getPenulis());
 
-//        db.update(TABLE_USERS, values, KEY_ID+"=?", new String[]{String.valueOf(buku.getId())});
-        //Todo harji : implement upsert query http://stackoverflow.com/questions/20323174/upsert-in-sqlite
+        values.put(NAME, user.getName());
+        values.put(EMAIL, user.getEmail());
 
+        values.put(ADDRESS, user.getAddress());
+        values.put(IDTYPE, user.getIdType());
+        values.put(IDNUMBER, user.getIdNumber());
+        values.put(PHONE, user.getPhoneNum());
+        db.update(TABLE_USERS,values,"id="+user.getId(),null);
         db.close();
     }
 
