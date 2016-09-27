@@ -154,11 +154,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return listBuku;
     }
 
-    public void update(User user){
+    public int update(User user){
         SQLiteDatabase db=this.getWritableDatabase();
 
         ContentValues values=new ContentValues();
-
+        int rowAffected =0;
         values.put(NAME, user.getName());
         values.put(EMAIL, user.getEmail());
 
@@ -166,8 +166,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(IDTYPE, user.getIdType());
         values.put(IDNUMBER, user.getIdNumber());
         values.put(PHONE, user.getPhoneNum());
-        db.update(TABLE_USERS,values,"id="+user.getId(),null);
+        rowAffected = db.update(TABLE_USERS,values,"id="+user.getId(),null);
         db.close();
+        return rowAffected;
     }
 
     public void delete(User buku){

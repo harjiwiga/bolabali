@@ -1,11 +1,14 @@
 package com.example.harjiwigaasmoko.irabukatoko.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by harjiwigaasmoko on 8/5/16.
  */
-public class User {
+public class User implements Parcelable,Cloneable{
 
-    private int id;
+    private Integer id;
     private String name;
     private String email;
     private String phoneNum;
@@ -20,6 +23,28 @@ public class User {
     public User(String id){
 
     }
+
+    protected User(Parcel in) {
+        name = in.readString();
+        email = in.readString();
+        phoneNum = in.readString();
+        address = in.readString();
+        idType = in.readString();
+        idNumber = in.readString();
+        selected = in.readByte() != 0;
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -69,11 +94,11 @@ public class User {
         this.idType = idType;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -88,5 +113,22 @@ public class User {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(email);
+        dest.writeString(phoneNum);
+        dest.writeString(address);
+        dest.writeString(idType);
+        dest.writeString(idNumber);
+        dest.writeByte((byte) (selected ? 1 : 0));
     }
 }

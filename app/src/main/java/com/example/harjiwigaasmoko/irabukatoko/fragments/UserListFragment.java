@@ -239,6 +239,9 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
         if(menuItemName.equalsIgnoreCase("edit")){
             //TODO harji: implement goto activity to edit the entity
             Log.i("onContextItemSelected","implement edit here");
+            Bundle args = new Bundle();
+            args.putParcelable("user", user);
+            this.setArguments(args);
 
         }else  if(menuItemName.equalsIgnoreCase("delete")){
             //TODO harji: implement delete entity

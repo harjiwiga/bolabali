@@ -90,15 +90,15 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        Log.i("onCreateView","onCreateView pass");
-        View view =inflater.inflate(R.layout.fragment_user_input, container, false);
-        editTextName = (EditText)view.findViewById(R.id.editText);
-        editTextEmail = (EditText)view.findViewById(R.id.editText2);
-        editTextPhone = (EditText)view.findViewById(R.id.editText3);
-        editTextAddress = (EditText)view.findViewById(R.id.editText4);
-        editTextIdType = (EditText)view.findViewById(R.id.editText5);
-        editTextIdNum = (EditText)view.findViewById(R.id.editText6);
-        saveButton = (Button)view.findViewById(R.id.savebutton);
+        Log.i("onCreateView", "onCreateView pass");
+        View view = inflater.inflate(R.layout.fragment_user_input, container, false);
+        editTextName = (EditText) view.findViewById(R.id.editText);
+        editTextEmail = (EditText) view.findViewById(R.id.editText2);
+        editTextPhone = (EditText) view.findViewById(R.id.editText3);
+        editTextAddress = (EditText) view.findViewById(R.id.editText4);
+        editTextIdType = (EditText) view.findViewById(R.id.editText5);
+        editTextIdNum = (EditText) view.findViewById(R.id.editText6);
+        saveButton = (Button) view.findViewById(R.id.savebutton);
         saveButton.setOnClickListener(this);
         return view;
     }
@@ -106,7 +106,7 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
 
-        Log.i("insideOnClick "," onButtonPressed");
+        Log.i("insideOnClick ", " onButtonPressed");
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
@@ -138,24 +138,36 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
         Editable addressEditable = null;
         Editable idTypeEditable = null;
         Editable idNumEditable = null;
+        //TODO Harji: fill this value from update activity
         User user = new User();
-        switch(v.getId()) {
+        int rowAffected =0;
+        switch (v.getId()) {
             case R.id.savebutton:
 
                 nameEditable = editTextName.getText();
                 emailEditable = editTextEmail.getText();
-                if((nameEditable!= null) && (!nameEditable.toString().equals("")) &&  (emailEditable!=null) &&(!emailEditable.toString().equals(""))){
-                    String name = String.valueOf(nameEditable);
-                    String email = String.valueOf(emailEditable);
-                    Log.i("nameEditable"," name : "+name);
-                    user.setName(name);
-                    user.setEmail(email);
-                    long record = dbHandler.save(user);
-                    if(record>0){
-                        SimpleAlertDialog.displayWithOK(getActivity(), " Record Saved");
+                if (user.getId()==null) {
+                    if ((nameEditable != null) && (!nameEditable.toString().equals("")) && (emailEditable != null) && (!emailEditable.toString().equals(""))) {
+                        String name = String.valueOf(nameEditable);
+                        String email = String.valueOf(emailEditable);
+                        Log.i("nameEditable", " name : " + name);
+                        user.setName(name);
+                        user.setEmail(email);
+                        long record = dbHandler.save(user);
+                        if (record > 0) {
+                            SimpleAlertDialog.displayWithOK(getActivity(), " Record Saved");
 
+                        }
+                    }
+                }else{
+                    rowAffected = dbHandler.update(user);
+
+                    if(rowAffected>0){
+                        SimpleAlertDialog.displayWithOK(getActivity(), " Record Updated");
                     }
                 }
+                break;
+
         }
     }
 
