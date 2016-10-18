@@ -262,16 +262,20 @@ public class UserListFragment extends android.support.v4.app.ListFragment implem
         }else  if(menuItemName.equalsIgnoreCase("delete")){
             //TODO harji: implement delete entity
             Log.i("onContextItemSelected","implement delete here");
-            mAdapter.notifyDataSetChanged();
+
             if(dbHandler.delete(user)>0){
 //                mListView.refreshDrawableState();
+//                mListView.invalidateViews();
+                usersList.clear();
+                usersList.addAll(dbHandler.findAll());
+                mAdapter.notifyDataSetChanged();
                 mListView.invalidateViews();
+                mListView.refreshDrawableState();
                 SimpleAlertDialog.displayWithOK(getActivity(), " Record Deleted");
-//                getContext().getContentResolver().notifyChange( null);
+
             }
         }
-//        TextView text = (TextView)findViewById(R.id.footer);
-//        text.setText(String.format("Selected %s for item %s", menuItemName, listItemName));
+
         return true;
     }
 }

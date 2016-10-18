@@ -9,6 +9,7 @@ import android.content.DialogInterface;
  */
 public class SimpleAlertDialog {
     public static void displayWithOK(Context c, String message) {
+
         displayWithOK(c, message, "Ira Bukatoko");
     }
 

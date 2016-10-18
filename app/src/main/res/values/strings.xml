@@ -13,7 +13,6 @@
     <string-array name="menu">
         <item>Edit</item>
         <item>Delete</item>
-        <item>Send</item>
     </string-array>
     <string name="title_activity_edit_cred">EditCredActivity</string>
 
