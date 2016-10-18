@@ -1,7 +1,10 @@
 package com.example.harjiwigaasmoko.irabukatoko.fragments;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -17,7 +20,9 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.harjiwigaasmoko.irabukatoko.EditCredActivity;
 import com.example.harjiwigaasmoko.irabukatoko.R;
+import com.example.harjiwigaasmoko.irabukatoko.additionalviews.SimpleAlertDialog;
 import com.example.harjiwigaasmoko.irabukatoko.customs.UserAdapter;
 import com.example.harjiwigaasmoko.irabukatoko.dummy.DummyContent;
 import com.example.harjiwigaasmoko.irabukatoko.entity.User;
@@ -36,7 +41,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
-public class UserListFragment extends android.support.v4.app.Fragment implements AbsListView.OnItemClickListener,View.OnClickListener {
+public class UserListFragment extends android.support.v4.app.ListFragment implements AbsListView.OnItemClickListener,View.OnClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -104,6 +109,7 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
 //                android.R.layout.simple_list_item_1, android.R.id.text1, usersList);
 //        mAdapter = new ArrayAdapter<User>(getActivity(),R.layout.row,usersList);
         mAdapter = new UserAdapter(getActivity(),R.layout.row,usersList);
+        mAdapter.notifyDataSetChanged();
 
 //        checkButtonClick();
 
@@ -218,6 +224,7 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
 //        Log.i("onCreateContextMenu"," menu Info : " +menuInfo);
         if (v.getId()==android.R.id.list) {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+//            info.notify();
             menu.setHeaderTitle(usersList.get(info.position).getName());
             String[] menuItems = getResources().getStringArray(R.array.menu);
             for (int i = 0; i<menuItems.length; i++) {
@@ -237,15 +244,31 @@ public class UserListFragment extends android.support.v4.app.Fragment implements
         int userId = user.getId();
         Log.i("onContextItemSelected","menuItemName: "+menuItemName);
         if(menuItemName.equalsIgnoreCase("edit")){
-            //TODO harji: implement goto activity to edit the entity
+            //TODO harji: implement goto activity to edit the entity -> back to edit fragment
             Log.i("onContextItemSelected","implement edit here");
-            Bundle args = new Bundle();
-            args.putParcelable("user", user);
-            this.setArguments(args);
+
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", user);
+
+            UserCredentialInput fragment = new UserCredentialInput();
+            fragment.setArguments(bundle);
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.content_main, fragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+
 
         }else  if(menuItemName.equalsIgnoreCase("delete")){
             //TODO harji: implement delete entity
             Log.i("onContextItemSelected","implement delete here");
+            mAdapter.notifyDataSetChanged();
+            if(dbHandler.delete(user)>0){
+//                mListView.refreshDrawableState();
+                mListView.invalidateViews();
+                SimpleAlertDialog.displayWithOK(getActivity(), " Record Deleted");
+//                getContext().getContentResolver().notifyChange( null);
+            }
         }
 //        TextView text = (TextView)findViewById(R.id.footer);
 //        text.setText(String.format("Selected %s for item %s", menuItemName, listItemName));

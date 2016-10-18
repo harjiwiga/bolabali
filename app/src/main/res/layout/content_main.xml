@@ -111,14 +111,13 @@
 
 
     <!--</ScrollView>-->
+    <!--android:text="this is content main"-->
 
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editText7"
-        android:text="this is content main"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"  />
+    <!--<EditText-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/editText7"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_centerHorizontal="true"  />-->
 
 </RelativeLayout>

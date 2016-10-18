@@ -5,6 +5,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,7 +44,7 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
 
     private DatabaseHandler dbHandler;
 
-
+    private User guser;
     private Button saveButton;
 
     // TODO: Rename and change types of parameters
@@ -91,6 +93,7 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         Log.i("onCreateView", "onCreateView pass");
+        Bundle bundle = this.getArguments();
         View view = inflater.inflate(R.layout.fragment_user_input, container, false);
         editTextName = (EditText) view.findViewById(R.id.editText);
         editTextEmail = (EditText) view.findViewById(R.id.editText2);
@@ -98,6 +101,20 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
         editTextAddress = (EditText) view.findViewById(R.id.editText4);
         editTextIdType = (EditText) view.findViewById(R.id.editText5);
         editTextIdNum = (EditText) view.findViewById(R.id.editText6);
+
+        if (bundle != null) {
+            guser = (User) bundle.getParcelable("user");
+            editTextName.setText(guser.getName());
+            editTextEmail.setText(guser.getEmail());
+            editTextPhone.setText(guser.getPhoneNum());
+            editTextAddress.setText(guser.getAddress());
+            editTextIdType.setText(guser.getIdType());
+            editTextIdNum.setText(guser.getIdNumber());
+//            editTextPhone.setText(user.getPhoneNum());
+        } else {
+            guser = new User();
+        }
+
         saveButton = (Button) view.findViewById(R.id.savebutton);
         saveButton.setOnClickListener(this);
         return view;
@@ -139,32 +156,69 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
         Editable idTypeEditable = null;
         Editable idNumEditable = null;
         //TODO Harji: fill this value from update activity
-        User user = new User();
-        int rowAffected =0;
+//        User user = new User();
+
+        int rowAffected = 0;
         switch (v.getId()) {
             case R.id.savebutton:
 
                 nameEditable = editTextName.getText();
                 emailEditable = editTextEmail.getText();
-                if (user.getId()==null) {
+                phoneEditable = editTextPhone.getText();
+                addressEditable = editTextAddress.getText();
+                idTypeEditable = editTextIdType.getText();
+                idNumEditable = editTextIdNum.getText();
+
+                String name = String.valueOf(nameEditable);
+                String email = String.valueOf(emailEditable);
+                String phone = String.valueOf((phoneEditable == null) ? "" : phoneEditable);
+                String address = String.valueOf((addressEditable == null) ? "" : addressEditable);
+                String idType = String.valueOf((idTypeEditable == null) ? "" : idTypeEditable);
+                String idNum = String.valueOf((idNumEditable == null) ? "" : idNumEditable);
+
+                if (guser.getId() == null) {
                     if ((nameEditable != null) && (!nameEditable.toString().equals("")) && (emailEditable != null) && (!emailEditable.toString().equals(""))) {
-                        String name = String.valueOf(nameEditable);
-                        String email = String.valueOf(emailEditable);
+
                         Log.i("nameEditable", " name : " + name);
-                        user.setName(name);
-                        user.setEmail(email);
-                        long record = dbHandler.save(user);
+                        guser.setName(name);
+                        guser.setEmail(email);
+                        guser.setPhoneNum(phone);
+                        guser.setAddress(address);
+                        guser.setIdType(idType);
+                        guser.setIdNumber(idNum);
+
+                        long record = dbHandler.save(guser);
                         if (record > 0) {
                             SimpleAlertDialog.displayWithOK(getActivity(), " Record Saved");
-
                         }
-                    }
-                }else{
-                    rowAffected = dbHandler.update(user);
+                        UserListFragment fragment = new UserListFragment();
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.replace(R.id.content_main, fragment);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
 
-                    if(rowAffected>0){
+                    }
+                } else {
+                    guser.setName(name);
+                    guser.setEmail(email);
+                    guser.setPhoneNum(phone);
+                    guser.setAddress(address);
+                    guser.setIdType(idType);
+                    guser.setIdNumber(idNum);
+                    rowAffected = dbHandler.update(guser);
+
+                    if (rowAffected > 0) {
                         SimpleAlertDialog.displayWithOK(getActivity(), " Record Updated");
                     }
+
+                    UserListFragment fragment = new UserListFragment();
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.content_main, fragment);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+
                 }
                 break;
 
