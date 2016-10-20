@@ -215,7 +215,9 @@ public class UserCredentialInput extends android.support.v4.app.Fragment impleme
                     UserListFragment fragment = new UserListFragment();
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.remove(this);
                     fragmentTransaction.replace(R.id.content_main, fragment);
+
                     fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
 

@@ -140,7 +140,8 @@ public class MainActivity extends AppCompatActivity
             isStartup = false;
         }
 
-        if (id != R.id.nav_manage) {
+//        if (id != R.id.nav_manage) {
+
             if (id == R.id.nav_camara) {
 
                 fragmentClass = UserCredentialInput.class;
@@ -151,7 +152,10 @@ public class MainActivity extends AppCompatActivity
 //            Log.i("onNavigation","in naf gallery");
                 fragmentClass = UserListFragment.class;
 //                contentMain.removeAllViews();
+            }else{
+
             }
+
             try {
                 fragment = (android.support.v4.app.Fragment) fragmentClass.newInstance();
             } catch (Exception e) {
@@ -164,12 +168,12 @@ public class MainActivity extends AppCompatActivity
 
 
 
-        }else{
-//            fragmentManager.popBackStack();
-//            contentMain.
-            fragmentManager.popBackStackImmediate();
-
-        }
+//        }else{
+////            fragmentManager.popBackStack();
+////            contentMain.
+////            fragmentManager.popBackStackImmediate();
+//
+//        }
 
         setTitle(item.getTitle());
 
